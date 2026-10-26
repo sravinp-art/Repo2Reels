@@ -1,0 +1,52 @@
+# Makes the starter reel from a fresh checkout on macOS and Linux, the way a new user would:
+# ./setup.sh, then make.py. The finished reels are attached to each run. Free for public repositories.
+name: Makes a reel on macOS and Linux
+on:
+  push:
+    branches: [main]
+    paths-ignore: ['**.md', 'media/**', '.github/ISSUE_TEMPLATE/**']
+  pull_request:
+    paths-ignore: ['**.md', 'media/**', '.github/ISSUE_TEMPLATE/**']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  starter-reel:
+    name: Starter reel on ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install ffmpeg
+        run: |
+          if [ "$RUNNER_OS" = "macOS" ]; then brew install ffmpeg; else sudo apt-get update -q && sudo apt-get install -y -q ffmpeg; fi
+      - name: Cache the voice models
+        uses: actions/cache@v4
+        with:
+          path: models
+          key: models-${{ runner.os }}-${{ hashFiles('setup.sh') }}
+      - name: Setup
+        run: ./setup.sh --listen
+      - name: Make the starter reel
+        run: python3 make.py projects/starter --listen
+      - name: Check the reel
+        run: |
+          f=out/starter/repo2reels-reel-1-your-repo-reels.mp4
+          test -s "$f"
+          ffprobe -v error -show_entries format=duration -show_entries stream=codec_type,width,height -of compact "$f"
+          python3 -m r2r.listen --file "$f"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: starter-reel-${{ matrix.os }}
+          path: |
+            out/starter/
+            build/starter/qa/
+          if-no-files-found: ignore
