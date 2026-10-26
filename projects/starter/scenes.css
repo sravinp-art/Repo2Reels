@@ -1,0 +1,18 @@
+/* Starter: the styles its scenes use. The engine's own (.card, .dcard, .eb, .h, .chip ...) are in engine/engine.html. */
+/* card 1: the five lines of the script */
+.sl{display:flex;align-items:center;gap:22px;height:78px;border-bottom:1.5px dashed var(--line);font:500 29px InterK;opacity:0}
+.sl:last-child{border-bottom:none}
+.sl .x{min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.sl .n{flex:0 0 48px;height:48px;border-radius:12px;background:var(--tint);color:var(--teal);display:flex;align-items:center;justify-content:center;font:700 24px SpaceMono}
+/* card 2: the steps, and the beat strip */
+.stp{display:flex;align-items:center;gap:28px;padding:24px 0;border-bottom:1.5px solid var(--line)}
+.stp .ic{flex:0 0 76px;height:76px;border-radius:50%;background:var(--greensoft);color:var(--green);display:flex;align-items:center;justify-content:center;opacity:0}
+.stp .t{font:600 46px Sora;letter-spacing:-.02em}
+.stp .s{font-size:28px;color:var(--muted);margin-top:6px}
+.beats{display:flex;gap:14px;margin-top:34px;height:74px;align-items:flex-end}
+.bt{flex:1;height:100%;border-radius:10px;background:var(--tint);transform-origin:bottom}
+.bt.on{background:var(--gold)}
+/* card 3: the tiles */
+.tile{display:flex;align-items:center;gap:28px;padding:28px 34px;border-radius:28px;background:var(--tint);color:var(--teal);margin-top:22px;opacity:0;flex-shrink:0}
+.tile .t{font:600 54px Sora;letter-spacing:-.025em}
+.tile.gold{background:var(--goldsoft);color:var(--goldtxt)}

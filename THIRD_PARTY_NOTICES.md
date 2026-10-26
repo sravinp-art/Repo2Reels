@@ -1,5 +1,11 @@
 # Third-party notices
 
+## Not covered by the MIT licence
+- The fonts in `engine/fonts`, under the SIL Open Font License 1.1 (see "Bundled" below).
+- The Keyva name, logo and reel content in `projects/keyva`, and the Keyva reels, covers and showcase in
+  `media/`. They belong to Keyva and are there as a worked example. The starter project and everything
+  else in this repository are under the MIT licence in `LICENSE`.
+
 ## Ideas and adapted work
 - **brag** by Shunit Haviv Hakimi, https://github.com/latent-spaces/brag (MIT). Repo2Reels adapts brag's
   creative rules for launch videos (hook first, show the real thing, every frame postable, cover as frame 0,

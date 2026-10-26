@@ -1,5 +1,22 @@
 # Writing scenes
 
+Start from `projects/starter` (`python3 make.py new yourproduct` copies it): one reel, commented line by line.
+
+## Lines and the voice
+Each reel's lines live in `project.json`. The voice reads words only, so:
+- Write numbers as they are said, and show them as figures in the captions:
+  `{"id": "r1_2", "text": "Save twenty percent.", "captions": [["twenty percent", "20%"]]}`.
+  A line with digits or symbols stops the `voice` step and says which.
+- A word the dictionary doesn't know stops it too. Add it to `lexicon`, written the way it sounds with
+  ordinary words (`"github": "git hub"`), or as misaki phonemes (`"keyva": "kˈivə"`). Acronyms the
+  dictionary lacks (API, GPU) are spelled out letter by letter on their own.
+- `"say": {"word": "..."}` on a line overrides one word for that line only, the same two ways.
+- `"pauseBefore": 0.4` leaves room for a card to land before the line is said.
+- Optional per reel: `"harmony"` (`chords` and `bass` as MIDI notes) picks the music's chords; without it,
+  one of eight progressions is chosen from the reel id.
+
+## Scenes
+
 A project's `scenes.js` adds one entry to `REELS` per reel. The engine (`engine/engine.html`) runs the rest:
 the night scene with the hook, the iris into the day scene, captions, the corner bug, light leaks at the cuts
 and the end card. The page is deterministic: `render(t)` poses every element for time `t`, so frames can be

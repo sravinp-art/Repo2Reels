@@ -1,0 +1,11 @@
+name: An idea
+description: A new scene, world, voice, platform or anything else
+labels: [enhancement]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: The idea
+      description: What would you like Repo2Reels to do, and what would you make with it?
+    validations:
+      required: true

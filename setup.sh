@@ -1,28 +1,48 @@
 #!/usr/bin/env bash
 # Repo2Reels setup: Python packages, a headless Chromium, and the voice models (downloaded once into models/).
-#   ./setup.sh               voice + render
+#   ./setup.sh               voice + render (about 350 MB of downloads, once)
 #   ./setup.sh --listen      also the Whisper model, to hear every line back (about 160 MB more)
+# Works on macOS and Linux (on Windows, run it inside WSL). Safe to run again: it skips what is already there.
 set -euo pipefail
 cd "$(dirname "$0")"
 MODELS="${R2R_MODELS:-models}"
 LISTEN=0; [ "${1:-}" = "--listen" ] && LISTEN=1
 
 say() { printf '\n== %s\n' "$*"; }
-need() { command -v "$1" >/dev/null 2>&1 || { echo "Missing: $1. $2"; exit 1; }; }
+fail() { printf '\nSetup stopped: %s\n' "$*" >&2; exit 1; }
+need() { command -v "$1" >/dev/null 2>&1 || fail "$1 is missing. $2"; }
+py_ok() { "$1" -c 'import sys; sys.exit(0 if sys.version_info >= (3, 10) else 1)' >/dev/null 2>&1; }
+has_pkgs() { "$1" -c 'import numpy, scipy, onnxruntime, playwright, PIL' >/dev/null 2>&1; }
 
-need python3 "Install Python 3.10 or newer."
-need ffmpeg "Install ffmpeg (macOS: brew install ffmpeg; Ubuntu: sudo apt install ffmpeg)."
-need git "Install git."
+need ffmpeg "Install it, then run ./setup.sh again.  macOS: brew install ffmpeg   Ubuntu/Debian: sudo apt install ffmpeg"
+need git "Install git, then run ./setup.sh again."
+need curl "Install curl, then run ./setup.sh again."
 
 say "Python packages"
-if python3 -c "import numpy, scipy, onnxruntime, playwright, PIL" 2>/dev/null; then
-  echo "already installed"
+if command -v python3 >/dev/null 2>&1 && py_ok python3 && has_pkgs python3; then
+  PY=python3; echo "already installed for $(python3 --version)"
+elif [ -x .venv/bin/python3 ] && has_pkgs .venv/bin/python3; then
+  PY=.venv/bin/python3; echo "already installed in .venv"
 else
-  python3 -m pip install -r requirements.txt || python3 -m pip install --break-system-packages -r requirements.txt
+  BASE=""
+  for c in python3.12 python3.13 python3.11 python3.10 python3; do
+    if command -v "$c" >/dev/null 2>&1 && py_ok "$c"; then BASE="$c"; break; fi
+  done
+  [ -n "$BASE" ] || fail "Repo2Reels needs Python 3.10 or newer.  macOS: brew install python@3.12   Ubuntu/Debian: sudo apt install python3"
+  echo "installing into a private environment, .venv, with $("$BASE" --version)"
+  rm -rf .venv
+  if ! "$BASE" -m venv .venv >/dev/null 2>&1; then
+    rm -rf .venv
+    fail "$BASE can't make a private environment.  Ubuntu/Debian: sudo apt install python3-venv  (or python3.12-venv), then run ./setup.sh again."
+  fi
+  .venv/bin/python3 -m pip install -q --upgrade pip
+  .venv/bin/python3 -m pip install -r requirements.txt || fail "pip couldn't install the packages in requirements.txt. If it says no version was found for your Python, install Python 3.12 (macOS: brew install python@3.12) and run ./setup.sh again."
+  PY=.venv/bin/python3
 fi
 
 say "Headless Chromium (for rendering)"
-if python3 - <<'EOF' 2>/dev/null
+chromium_ok() {
+  "$PY" - <<'EOF' >/dev/null 2>&1
 import asyncio
 from playwright.async_api import async_playwright
 async def main():
@@ -30,7 +50,11 @@ async def main():
         b = await p.chromium.launch(); await b.close()
 asyncio.run(main())
 EOF
-then echo "ready"; else python3 -m playwright install chromium; fi
+}
+if chromium_ok; then echo "ready"; else
+  "$PY" -m playwright install chromium
+  chromium_ok || fail "Chromium is installed but can't start; it needs a few system libraries. Run:  sudo $PY -m playwright install-deps chromium   then ./setup.sh again."
+fi
 
 mkdir -p "$MODELS"
 fetch() {  # url dest
@@ -43,7 +67,7 @@ say "Voice: Kokoro v1.0 (Apache-2.0)"
 fetch https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/kokoro-v1.0.onnx "$MODELS/kokoro-v1.0.onnx"
 fetch https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/voices-v1.0.bin "$MODELS/voices-v1.0.bin"
 
-say "Pronunciation lexicon: misaki (Apache-2.0)"
+say "Pronunciation dictionary: misaki (Apache-2.0)"
 if [ -s "$MODELS/misaki/us_gold.json" ] && [ -s "$MODELS/misaki/us_silver.json" ]; then echo "have it"; else
   tmp="$(mktemp -d)"
   git clone -q --depth 1 --filter=blob:none --sparse https://github.com/hexgrad/misaki "$tmp/misaki"
@@ -65,5 +89,6 @@ if [ "$LISTEN" = 1 ]; then
   fi
 fi
 
-say "Done"
-echo "Try:  python3 make.py projects/keyva r11"
+say "Ready"
+echo "Make your first reel (about five minutes):   python3 make.py projects/starter"
+echo "Then start your own:                        python3 make.py new yourproduct"

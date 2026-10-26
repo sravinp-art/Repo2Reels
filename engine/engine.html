@@ -434,6 +434,9 @@ function applyBrand(B) {
   document.querySelectorAll('.logo').forEach(el => { el.innerHTML = B.logoSvg || ''; el.style.display = B.logoSvg ? '' : 'none'; });
   document.querySelectorAll('#end .wm, #bug .wm').forEach(el => { el.textContent = B.name || ''; });
   $('eurl').textContent = B.url || '';
+  // a long name or address is set smaller on the end card, never cut: the lock-up keeps 80px clear each side
+  $('eurl').style.fontSize = Math.min(54, fitSize(B.url || '', 'InterK', 600, 920, 54, 30, .02)) + 'px';
+  document.querySelector('#end .wm').style.fontSize = Math.min(140, fitSize(B.name || '', 'Sora', 600, B.logoSvg ? 720 : 920, 140, 64, -.035)) + 'px';
 }
 
 const REELS = {};

@@ -1,0 +1,23 @@
+name: Something went wrong
+description: setup.sh or make.py stopped, or a reel came out wrong
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: The command you ran, and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: The last lines of the output
+      render: text
+  - type: input
+    id: system
+    attributes:
+      label: Your computer
+      placeholder: macOS 15 on an M2, Python 3.12
+    validations:
+      required: true

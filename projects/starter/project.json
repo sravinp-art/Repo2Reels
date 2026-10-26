@@ -1,0 +1,29 @@
+{
+  "name": "Starter",
+  "about": "The starter project: one short reel, about Repo2Reels itself. Start your own from it with: python3 make.py new yourproduct",
+  "brand": {
+    "name": "Repo2Reels",
+    "url": "github.com/sravinp-art/Repo2Reels",
+    "logo": "logo.svg"
+  },
+  "voice": {
+    "voice": "af_heart",
+    "speed": 1.0
+  },
+  "world": "dusk",
+  "lexicon": {
+    "github": "git hub"
+  },
+  "reels": {
+    "r1": {
+      "slug": "your-repo-reels",
+      "lines": [
+        {"id": "r1_1", "text": "Your repo can make its own reels."},
+        {"id": "r1_2", "text": "Just write five lines about your product."},
+        {"id": "r1_3", "text": "Repo to Reels speaks them, scores the music, and cuts each scene on the beat.", "captions": [["Repo to Reels", "Repo2Reels"]]},
+        {"id": "r1_4", "text": "No API keys. No GPU. It runs on your own computer.", "pauseBefore": 0.3},
+        {"id": "r1_5", "text": "Repo to Reels. Free and open source, on GitHub.", "pauseBefore": 0.4, "captions": [["Repo to Reels", "Repo2Reels"]]}
+      ]
+    }
+  }
+}
