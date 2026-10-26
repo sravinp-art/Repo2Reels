@@ -1,0 +1,378 @@
+{
+  "name": "Keyva",
+  "about": "Ten reels for keyva.ae, Dubai property research built on Dubai Land Department records (batch 3, 26 Oct 2026).",
+  "brand": {
+    "name": "Keyva",
+    "url": "keyva.ae",
+    "logo": "logo.svg"
+  },
+  "voice": {
+    "voice": "af_heart",
+    "speed": 1.0
+  },
+  "world": "dusk",
+  "lexicon": {
+    "keyva": "kˈivə",
+    "keyva's": "kˈivəz",
+    "dubai": "dˌubˈI",
+    "uae's": "jˌuˌAˈiz",
+    "uae": "jˌuˌAˈi",
+    "dirham": "dˈɪɹhæm",
+    "dirhams": "dˈɪɹhæmz",
+    "qr": "kjˌuˈɑɹ",
+    "jvc": "ʤˌAvˌisˈi",
+    "jlt": "ʤˌAˌɛltˈi",
+    "nri": "ˌɛnˌɑɹˈI",
+    "nris": "ˌɛnˌɑɹˈIz",
+    "barsha": "bˈɑɹʃə",
+    "marsa": "mˈɑɹsə",
+    "thanyah": "θˈænjə",
+    "hadaeq": "hədˈɑik",
+    "sheikh": "ʃˈAk",
+    "mohammed": "mOhˈæməd",
+    "bin": "bˈɪn",
+    "rashid": "ɹəʃˈid",
+    "burj": "bˈɜɹʤ",
+    "khalifa": "kəlˈifə",
+    "trakheesi": "tɹækhˈisi",
+    "dubai's": "dˌubˈIz",
+    "rest": "ɹˈɛst",
+    "creditors": "kɹˈɛdəɾəɹz",
+    "lakh": "lˈɑk"
+  },
+  "reels": {
+    "r11": {
+      "slug": "no-jvc-on-record",
+      "harmony": {
+        "chords": [[54, 57, 61], [50, 54, 57], [57, 61, 64], [52, 56, 59]],
+        "bass": [42, 38, 45, 40]
+      },
+      "lines": [
+        {
+          "id": "r11_1",
+          "text": "There's no JVC in Dubai's rent records."
+        },
+        {
+          "id": "r11_2",
+          "text": "It's filed as Al Barsha South Fourth."
+        },
+        {
+          "id": "r11_3",
+          "text": "Dubai Marina? Marsa Dubai.",
+          "pauseBefore": 0.5
+        },
+        {
+          "id": "r11_4",
+          "text": "JLT? Al Thanyah Fifth.",
+          "pauseBefore": 0.5
+        },
+        {
+          "id": "r11_5",
+          "text": "Dubai Hills? Hadaeq Sheikh Mohammed Bin Rashid.",
+          "pauseBefore": 0.5
+        },
+        {
+          "id": "r11_6",
+          "text": "And Downtown is filed as Burj Khalifa.",
+          "pauseBefore": 0.5
+        },
+        {
+          "id": "r11_7",
+          "text": "Keyva matches the name you know to the name on record, so the numbers add up.",
+          "pauseBefore": 0.5
+        }
+      ]
+    },
+    "r12": {
+      "slug": "india-250k-limit",
+      "harmony": {
+        "chords": [[50, 53, 57], [46, 50, 53], [53, 57, 60], [48, 52, 55]],
+        "bass": [38, 34, 41, 36]
+      },
+      "lines": [
+        {
+          "id": "r12_1",
+          "text": "Buying in Dubai from India? There's a quarter million dollar limit."
+        },
+        {
+          "id": "r12_2",
+          "text": "Each resident can send up to two hundred and fifty thousand dollars a financial year, all purposes combined.",
+          "captions": [["two hundred and fifty thousand dollars", "USD 250,000"]]
+        },
+        {
+          "id": "r12_3",
+          "text": "But co-owners can each send their own. Four family members on the title: up to a million dollars.",
+          "pauseBefore": 0.5,
+          "captions": [["a million dollars", "USD 1 million"]]
+        },
+        {
+          "id": "r12_4",
+          "text": "Past ten lakh rupees, your bank collects twenty percent tax at source. It's credited against your tax, not a cost.",
+          "captions": [["ten lakh rupees", "₹10 lakh"], ["twenty percent", "20%"]]
+        },
+        {
+          "id": "r12_5",
+          "text": "Keyva's India guide puts a source and a date on every rule."
+        }
+      ]
+    },
+    "r13": {
+      "slug": "knowledge-fee",
+      "harmony": {
+        "chords": [[52, 55, 59], [48, 52, 55], [55, 59, 62], [50, 54, 57]],
+        "bass": [40, 36, 43, 38]
+      },
+      "lines": [
+        {
+          "id": "r13_1",
+          "text": "Buying a home in Dubai? There's a knowledge fee."
+        },
+        {
+          "id": "r13_2",
+          "text": "Ten dirhams. And a ten dirham innovation fee.",
+          "captions": [["Ten dirhams", "AED 10"], ["a ten dirham", "an AED 10"]]
+        },
+        {
+          "id": "r13_3",
+          "text": "Two hundred and fifty for the title deed, and two hundred and fifty for the map.",
+          "captions": [["Two hundred and fifty", "AED 250"], ["two hundred and fifty", "AED 250"]]
+        },
+        {
+          "id": "r13_4",
+          "text": "Taking a mortgage? The title deed, knowledge and innovation fees come twice: once for the sale, once for the mortgage.",
+          "pauseBefore": 0.5
+        },
+        {
+          "id": "r13_5",
+          "text": "Small, but they add up. Keyva lists every fee, and who sets it.",
+          "pauseBefore": 0.5
+        }
+      ]
+    },
+    "r14": {
+      "slug": "sometimes-it-says-no",
+      "harmony": {
+        "chords": [[47, 50, 54], [43, 47, 50], [50, 54, 57], [45, 49, 52]],
+        "bass": [35, 31, 38, 33]
+      },
+      "lines": [
+        {
+          "id": "r14_1",
+          "text": "Most price tools always give you a number. Keyva sometimes won't.",
+          "say": {
+            "won't": "wˈOnt"
+          }
+        },
+        {
+          "id": "r14_2",
+          "text": "Fewer than eight comparable sales? A fair price would be guesswork, so it says so.",
+          "pauseBefore": 0.5,
+          "captions": [["eight", "8"]]
+        },
+        {
+          "id": "r14_3",
+          "text": "Early in a month, this month can mean two days of sales. In Dubai Marina, twenty-two.",
+          "pauseBefore": 0.5,
+          "captions": [["two days", "2 days"], ["twenty-two", "22"]]
+        },
+        {
+          "id": "r14_4",
+          "text": "So Keyva uses the last thirty days, and shows the count on every figure.",
+          "pauseBefore": 0.5,
+          "captions": [["thirty days", "30 days"]]
+        }
+      ]
+    },
+    "r15": {
+      "slug": "off-plan-escrow",
+      "harmony": {
+        "chords": [[49, 52, 56], [45, 49, 52], [52, 56, 59], [47, 51, 54]],
+        "bass": [37, 33, 40, 35]
+      },
+      "lines": [
+        {
+          "id": "r15_1",
+          "text": "Buying off-plan in Dubai? Your money shouldn't go to the developer directly."
+        },
+        {
+          "id": "r15_2",
+          "text": "By law, every project gets its own escrow account, used only to build it, and protected from the developer's creditors.",
+          "pauseBefore": 0.5
+        },
+        {
+          "id": "r15_3",
+          "text": "Keyva's project check shows what the register holds: the status, the escrow bank, the developer's licence, and the completion target.",
+          "pauseBefore": 0.5
+        },
+        {
+          "id": "r15_4",
+          "text": "What it can't check, like whether the account is funded, it tells you."
+        }
+      ]
+    },
+    "r16": {
+      "slug": "90-days-notice",
+      "harmony": {
+        "chords": [[45, 48, 52], [41, 45, 48], [48, 52, 55], [43, 47, 50]],
+        "bass": [33, 29, 36, 31]
+      },
+      "lines": [
+        {
+          "id": "r16_1",
+          "text": "Your landlord wants more rent? Check the date on the notice first."
+        },
+        {
+          "id": "r16_2",
+          "text": "A landlord must give ninety days' written notice before changing any term of your contract, rent included.",
+          "pauseBefore": 0.5,
+          "captions": [["ninety", "90"]]
+        },
+        {
+          "id": "r16_3",
+          "text": "Served late, an otherwise lawful increase doesn't bind you for that renewal.",
+          "pauseBefore": 0.5
+        },
+        {
+          "id": "r16_4",
+          "text": "Keyva's rent check shows the legal cap, and the notice rule, side by side.",
+          "say": {
+            "and": "ˈænd"
+          },
+          "pauseBefore": 0.5
+        }
+      ]
+    },
+    "r17": {
+      "slug": "car-loan-mortgage",
+      "harmony": {
+        "chords": [[56, 59, 63], [52, 56, 59], [47, 51, 54], [54, 58, 61]],
+        "bass": [44, 40, 35, 42]
+      },
+      "lines": [
+        {
+          "id": "r17_1",
+          "text": "That car loan could shrink your Dubai mortgage."
+        },
+        {
+          "id": "r17_2",
+          "text": "The Central Bank caps all your loan repayments together at half your income."
+        },
+        {
+          "id": "r17_3",
+          "text": "Earn thirty thousand a month? That's fifteen thousand, for every loan you have.",
+          "pauseBefore": 0.5,
+          "captions": [["thirty thousand", "AED 30,000"], ["fifteen thousand", "AED 15,000"]]
+        },
+        {
+          "id": "r17_4",
+          "text": "A three thousand car loan leaves twelve thousand for the mortgage. That's a fifth less to borrow against.",
+          "pauseBefore": 0.5,
+          "captions": [["A three thousand", "An AED 3,000"], ["twelve thousand", "AED 12,000"]]
+        },
+        {
+          "id": "r17_5",
+          "text": "Keyva's mortgage calculator counts your existing debts, against the Central Bank's caps.",
+          "pauseBefore": 0.5
+        }
+      ]
+    },
+    "r18": {
+      "slug": "deposit-not-law",
+      "harmony": {
+        "chords": [[55, 58, 62], [51, 55, 58], [46, 50, 53], [53, 57, 60]],
+        "bass": [43, 39, 34, 41]
+      },
+      "lines": [
+        {
+          "id": "r18_1",
+          "text": "That ten percent deposit? It's not a law.",
+          "say": {
+            "not": "nˈɑt"
+          },
+          "captions": [["ten percent", "10%"]]
+        },
+        {
+          "id": "r18_2",
+          "text": "It's a market custom, agreed between buyer and seller."
+        },
+        {
+          "id": "r18_3",
+          "text": "No government document sets the percentage."
+        },
+        {
+          "id": "r18_4",
+          "text": "What is official: Contract F, made by a registered broker in Dubai REST. It records the price, the payment plan, and who pays the transfer fee.",
+          "pauseBefore": 0.5
+        },
+        {
+          "id": "r18_5",
+          "text": "Keyva marks what's law, and what's custom.",
+          "pauseBefore": 0.5
+        }
+      ]
+    },
+    "r19": {
+      "slug": "permit-red-flag",
+      "harmony": {
+        "chords": [[53, 56, 60], [49, 53, 56], [44, 48, 51], [51, 55, 58]],
+        "bass": [41, 37, 32, 39]
+      },
+      "lines": [
+        {
+          "id": "r19_1",
+          "text": "A Dubai property ad with no permit number? That's the biggest red flag."
+        },
+        {
+          "id": "r19_2",
+          "text": "Every legitimate ad must carry a Trakheesi permit from the Land Department."
+        },
+        {
+          "id": "r19_3",
+          "text": "Scan its QR code in the Dubai REST app. It confirms the permit is real, active, and for this property.",
+          "pauseBefore": 0.5
+        },
+        {
+          "id": "r19_4",
+          "text": "But a valid permit doesn't mean a fair price.",
+          "pauseBefore": 0.5
+        },
+        {
+          "id": "r19_5",
+          "text": "For that, check what similar homes actually sold for, on Keyva."
+        }
+      ]
+    },
+    "r20": {
+      "slug": "dubai-publishes-prices",
+      "harmony": {
+        "chords": [[48, 51, 55], [44, 48, 51], [51, 55, 58], [46, 50, 53]],
+        "bass": [36, 32, 39, 34]
+      },
+      "lines": [
+        {
+          "id": "r20_1",
+          "text": "Dubai publishes what homes actually sell for."
+        },
+        {
+          "id": "r20_2",
+          "text": "Not asking prices. Registered sales, from the Land Department's open data."
+        },
+        {
+          "id": "r20_3",
+          "text": "A listing only shows you what's asked.",
+          "pauseBefore": 0.5
+        },
+        {
+          "id": "r20_4",
+          "text": "Keyva turns those records into typical prices, area by area, with the number of sales and the date on every figure.",
+          "pauseBefore": 0.5
+        },
+        {
+          "id": "r20_5",
+          "text": "Check before you offer.",
+          "pauseBefore": 0.5
+        }
+      ]
+    }
+  }
+}

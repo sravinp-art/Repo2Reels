@@ -1,0 +1,461 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+@font-face{font-family:Sora;src:url(fonts/Sora.ttf) format("truetype");font-weight:100 900}
+@font-face{font-family:SpaceMono;src:url(fonts/SpaceMono-Regular.ttf);font-weight:400}
+@font-face{font-family:SpaceMono;src:url(fonts/SpaceMono-Bold.ttf);font-weight:700}
+@font-face{font-family:InterK;src:url(fonts/Inter-Regular.otf);font-weight:400}
+@font-face{font-family:InterK;src:url(fonts/Inter-Medium.otf);font-weight:500}
+@font-face{font-family:InterK;src:url(fonts/Inter-SemiBold.otf);font-weight:600}
+:root{--paper:#f0efea;--ink:#1b2521;--teal:#0b4f4a;--teal2:#12776c;--gold:#d4a053;--goldtxt:#7d5f1c;--goldsoft:#f7eedf;--goldlight:#f0c579;--rust:#a84720;--rustsoft:#f8e6de;--muted:#646c68;--tint:#e3eeec;--line:#dcdad3;--green:#2e6b34;--greensoft:#e3f1e3}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#021614;font-family:InterK,sans-serif;color:var(--ink)}
+canvas{position:absolute;left:0;top:0}
+.abs{position:absolute}
+.mono{font-family:SpaceMono}
+.sora{font-family:Sora;letter-spacing:-.025em}
+#veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(2,22,20,.62) 0%,rgba(2,22,20,.25) 45%,rgba(2,22,20,.7) 100%)}
+#night,#paper,#pscene,#end{position:absolute;inset:0}
+#night{isolation:isolate} /* keeps the night scene's annotations (z-index 3) under the paper during the iris */
+#paper{background:radial-gradient(120% 70% at 50% 0%,#fbf7ee 0%,#f0efea 60%);clip-path:circle(0px at 540px 900px)}
+/* hook */
+.hook{position:absolute;left:70px;width:900px;top:300px;font-family:Sora;font-weight:600;color:#fff;text-shadow:0 6px 40px rgba(0,0,0,.5)}
+/* tracking is set on the line, where the font size is: an em on .hook would resolve at 16px and do nothing */
+.hook .ln{display:block;white-space:nowrap;line-height:1.02;letter-spacing:-.035em}
+.hook .w{display:inline-block;margin-right:.26em;transform-origin:50% 80%}
+.hook .w:last-child{margin-right:0}
+.hook .g{color:var(--goldlight)}
+/* glass + cards */
+.glass{position:absolute;background:rgba(6,38,35,.7);border:1.5px solid rgba(240,197,121,.38);box-shadow:0 30px 80px rgba(0,0,0,.35);border-radius:34px;color:#fff;padding:40px 44px}
+.glass .eb{color:rgba(246,231,198,.8)}
+.card{position:absolute;background:#fff;border-radius:34px;box-shadow:0 26px 70px rgba(27,37,33,.13);padding:40px 44px}
+.eb{font:600 25px InterK;letter-spacing:.14em;text-transform:uppercase;color:var(--teal)}
+.h{font-family:Sora;font-weight:600;letter-spacing:-.025em;color:var(--ink)}
+.muted{color:var(--muted)}
+.big{font:700 92px SpaceMono;letter-spacing:-.02em;line-height:1}
+.tag{position:absolute;right:30px;top:30px;font:600 18px InterK;letter-spacing:.1em;text-transform:uppercase;padding:9px 15px;border-radius:999px;background:var(--goldsoft);color:var(--goldtxt)}
+.glass .tag{background:rgba(240,197,121,.16);color:var(--goldlight)}
+.chip{display:inline-flex;align-items:center;gap:10px;font:600 30px InterK;padding:12px 22px;border-radius:999px}
+.chip.ok{background:var(--greensoft);color:var(--green)}.chip.warn{background:var(--rustsoft);color:var(--rust)}.chip.gold{background:var(--goldsoft);color:var(--goldtxt)}.chip.tint{background:var(--tint);color:var(--teal)}
+.stamp{position:absolute;font:700 40px InterK;letter-spacing:.08em;padding:12px 24px;border-radius:14px;border:5px solid currentColor;transform-origin:center;opacity:0}
+.blur{filter:blur(10px)}
+.row{display:flex;justify-content:space-between;align-items:center}
+svg.ann{position:absolute;overflow:visible;pointer-events:none}
+/* bug */
+#bug{position:absolute;left:70px;top:190px;display:flex;align-items:center;gap:14px;opacity:0}
+#bug .logo,#bug svg{display:block;width:44px;height:44px}
+#bug .wm{font-family:Sora;font-weight:600;font-size:34px;letter-spacing:-.03em;color:var(--teal)}
+#bug .sep{width:2px;height:30px;background:var(--line)}
+#bug .lb{font:600 21px InterK;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+/* end card */
+#end{opacity:0}
+#end .lock{position:absolute;left:0;right:0;top:560px;display:flex;justify-content:center;align-items:center;gap:30px}
+#end .lock .logo,#end .lock svg{display:block;width:170px;height:170px}
+#end .wm{font-family:Sora;font-weight:600;font-size:140px;letter-spacing:-.035em;color:var(--teal)}
+#elabel{position:absolute;left:110px;width:860px;top:800px;text-align:center;font-family:Sora;font-weight:600;line-height:1.1;letter-spacing:-.025em;color:var(--ink);text-wrap:balance}
+#eurl{position:absolute;left:0;right:0;text-align:center;font:600 54px InterK;letter-spacing:.02em;color:var(--goldtxt)}
+#efoot{position:absolute;left:130px;width:820px;text-align:center;font:400 24px/1.42 InterK;color:var(--muted)}
+/* captions v2 */
+#cap{position:absolute;left:0;right:0;top:1290px;display:flex;justify-content:center;opacity:0}
+#cap .plate{max-width:820px;padding:14px 26px 18px;border-radius:26px;background:rgba(4,30,27,.9);font-family:Sora;font-weight:600;font-size:56px;line-height:1.16;color:#fff;text-align:center;letter-spacing:-.012em;box-shadow:0 12px 34px rgba(0,0,0,.28)}
+#cap .w{display:inline-block;margin:0 .06em;padding:0 .12em;border-radius:12px}
+#cap .w.on{background:var(--goldlight);color:#1a1206}
+#cap .w.todo{color:rgba(255,255,255,.5)}
+/* overlays */
+#leak{position:absolute;inset:0;mix-blend-mode:screen;pointer-events:none;opacity:0;overflow:hidden}
+#leak .lb{position:absolute;border-radius:50%;filter:blur(70px)}
+#flash{position:absolute;inset:0;background:#fff6e2;opacity:0}
+#grain{position:absolute;inset:-200px;background:url(grain.png);mix-blend-mode:overlay;opacity:.06;pointer-events:none}
+#vig{position:absolute;inset:0;pointer-events:none}
+/* scene kit: cards, inputs, labels, key-value rows, bars */
+.dcard{left:100px;width:840px;top:330px;min-height:860px;display:flex;flex-direction:column;justify-content:center}
+.dcard.free{display:block}
+.ncard{left:100px;width:840px;top:900px}
+.in{margin-top:12px;height:84px;border:2px solid var(--line);border-radius:20px;padding:0 26px;display:flex;align-items:center;font-size:38px;font-weight:500;color:var(--ink);background:#fff}
+.glass .in{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.25);color:#fff}
+.in.focus{border-color:var(--teal);box-shadow:0 0 0 6px rgba(11,79,74,.12)}
+.caret{display:inline-block;width:3px;height:42px;background:var(--goldlight);margin-left:3px}
+.fl{font-size:28px;color:var(--muted)}
+.lbl{font:600 25px InterK;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.src{font-size:25px;color:var(--muted);line-height:1.4}
+.note{font-size:36px;line-height:1.32;color:var(--ink)}
+.kv{display:flex;justify-content:space-between;align-items:baseline;padding:16px 0;border-bottom:1.5px dashed var(--line);font-size:36px}
+.kv:last-child{border-bottom:none}
+.kv .v{font:700 40px SpaceMono}
+.bar{position:relative;height:56px;border-radius:16px;background:var(--tint);overflow:hidden}
+.glass .bar{background:rgba(255,255,255,.1)}
+.fill{position:absolute;left:0;top:0;bottom:0;transform-origin:left;border-radius:16px}
+/*SCENE_CSS*/
+</style></head>
+<body>
+<canvas id="sky"></canvas>
+<div id="veil"></div>
+<div id="night"></div>
+<div id="paper"><svg id="dayart"></svg><div id="pscene"></div></div>
+<div id="end">
+  <div class="lock"><span class="logo"></span><div class="wm"></div></div>
+  <div id="elabel"></div><div id="eurl"></div><div id="efoot"></div>
+</div>
+<div id="bug"><span class="logo"></span><div class="wm"></div><div class="sep"></div><div class="lb" id="buglb"></div></div>
+<div id="leak"><div class="lb" id="lk1"></div><div class="lb" id="lk2"></div><div class="lb" id="lk3"></div></div>
+<div id="cap"><div class="plate" id="plate"></div></div>
+<div id="flash"></div>
+<div id="grain"></div>
+<div id="vig"></div>
+<script src="timing.js"></script>
+<script>
+const V = true, W = 1080, H = 1920, FPS = 30;
+const $ = id => document.getElementById(id);
+const cl = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const p = (t, a, b) => cl((t - a) / (b - a));
+function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296 } }
+
+// ================================================================ timing toolkit (Remotion-style, own implementation)
+function bezier(x1, y1, x2, y2) {
+  const A = (a, b) => 1 - 3 * b + 3 * a, B = (a, b) => 3 * b - 6 * a, C = a => 3 * a;
+  const calc = (t, a, b) => ((A(a, b) * t + B(a, b)) * t + C(a)) * t;
+  const slope = (t, a, b) => 3 * A(a, b) * t * t + 2 * B(a, b) * t + C(a);
+  return x => {
+    if (x <= 0) return 0; if (x >= 1) return 1;
+    let t = x;
+    for (let i = 0; i < 8; i++) { const s = slope(t, x1, x2); if (Math.abs(s) < 1e-6) break; t -= (calc(t, x1, x2) - x) / s; }
+    t = cl(t);
+    return calc(t, y1, y2);
+  };
+}
+const _sp = new Map();
+function springTable(cfg) {
+  const d = cfg.damping ?? 10, k = cfg.stiffness ?? 100, m = cfg.mass ?? 1;
+  const key = d + '|' + k + '|' + m;
+  if (_sp.has(key)) return _sp.get(key);
+  const dt = 1 / 600; let x = 0, v = 0, t = 0, calm = 0; const xs = [0];
+  while (t < 12) {
+    const a = (-k * (x - 1) - d * v) / m; v += a * dt; x += v * dt; t += dt; xs.push(x);
+    if (Math.abs(x - 1) < .004 && Math.abs(v) < .004) { calm += dt; if (calm > .05) break; } else calm = 0;
+  }
+  const tab = { xs, dt, end: xs[xs.length - 1] }; _sp.set(key, tab); return tab;
+}
+function lookup(tab, i) { const i0 = Math.max(0, Math.min(tab.xs.length - 1, Math.floor(i))); const i1 = Math.min(tab.xs.length - 1, i0 + 1); const f = i - Math.floor(i); return tab.xs[i0] + (tab.xs[i1] - tab.xs[i0]) * cl(f); }
+const Easing = {
+  linear: x => x,
+  bezier,
+  spring(cfg = {}) { const tab = springTable(cfg); return x => x <= 0 ? 0 : x >= 1 ? 1 : lookup(tab, x * (tab.xs.length - 1)) / tab.end; },
+};
+const EO = bezier(.16, 1, .3, 1), EIO = bezier(.65, 0, .35, 1), EI = bezier(.5, 0, .75, 0), SMOOTH = Easing.spring({ damping: 200 });
+// physical spring in seconds since start (overshoots when underdamped)
+function spr(tau, cfg = { damping: 13, stiffness: 190, mass: 1 }) { if (tau <= 0) return 0; const tab = springTable(cfg); const i = tau / tab.dt; return i >= tab.xs.length - 1 ? 1 : lookup(tab, i); }
+// interpolate over keyframes (times in seconds); clamps both ends
+function iv(t, ins, outs, ease = EO) {
+  if (t <= ins[0]) return outs[0]; const n = ins.length - 1; if (t >= ins[n]) return outs[n];
+  let i = 0; while (t > ins[i + 1]) i++;
+  const e = Array.isArray(ease) ? ease[i] : ease; const k = e((t - ins[i]) / (ins[i + 1] - ins[i]));
+  return outs[i] + (outs[i + 1] - outs[i]) * k;
+}
+// perceptual scale: equal visual steps in log space
+function pscale(k, s0, s1) { s0 = Math.max(s0, .001); return s0 * Math.pow(s1 / s0, k); }
+
+// ================================================================ layout helpers
+const _cv = document.createElement('canvas').getContext('2d');
+function measure(text, font) { _cv.font = font; return _cv.measureText(text).width; }
+function fitSize(text, family, weight, width, max, min = 20, letter = 0) {
+  const w100 = measure(text, `${weight} 100px ${family}`) + letter * 100 * Math.max(0, text.length - 1);
+  return Math.max(min, Math.min(max, Math.floor(100 * width / Math.max(1, w100))));
+}
+// a hook block: lines of words, each line fitted to the width; <g>…</g> marks gold words
+function buildHook(el, lines, { width = 900, max = 150, min = 64, top = 300 } = {}) {
+  el.style.top = top + 'px'; el.style.width = width + 'px'; el.innerHTML = '';
+  const words = [];
+  for (const line of lines) {
+    const d = document.createElement('div'); d.className = 'ln'; d.style.fontSize = '100px';
+    d.innerHTML = line.split(' ').map(w => { const g = /<g>|<\/g>/.test(w); return `<span class="w${g ? ' g' : ''}">${w.replace(/<\/?g>/g, '')}</span>`; }).join('');
+    el.appendChild(d);
+    // fit the line as it is really set (word gaps are margins, tracking is per line), measured in the page at 100px
+    const ws = d.querySelectorAll('.w'), a = ws[0], z = ws[ws.length - 1];
+    const real = z.offsetLeft + z.offsetWidth - a.offsetLeft;
+    const size = real > 0 ? Math.max(min, Math.min(max, Math.floor(100 * width / real))) : fitSize(line.replace(/<\/?g>/g, ''), 'Sora', 600, width, max, min, -.035);
+    d.style.fontSize = size + 'px'; words.push(...ws);
+  }
+  return words;
+}
+function hookIn(words, t, t0 = 0, gap = .045) {
+  words.forEach((w, k) => {
+    const tau = t - t0 - k * gap; const s = spr(tau, { damping: 15, stiffness: 210 });
+    w.style.opacity = cl(tau / .12); w.style.translate = `0 ${(1 - s) * 60}px`; w.style.scale = String(pscale(cl(s, 0, 1.2), .6, 1));
+  });
+}
+// enter / exit with a spring; returns visibility
+function enter(el, t, t0, { dy = 46, dx = 0, s0 = .96, cfg = { damping: 18, stiffness: 170 } } = {}) {
+  const s = spr(t - t0, cfg); el.style.opacity = cl((t - t0) / .14);
+  el.style.translate = `${(1 - s) * dx}px ${(1 - s) * dy}px`; el.style.scale = String(pscale(cl(s), s0, 1));
+}
+function fadeOut(el, t, t0, dur = .25, dy = -30) { if (t < t0) return; const k = EIO(p(t, t0, t0 + dur)); el.style.opacity = String((parseFloat(el.style.opacity || 1)) * (1 - k)); el.style.translate = `0 ${k * dy}px`; }
+function counter(t, t0, dur, a, b, ease = EIO) { return a + (b - a) * ease(p(t, t0, t0 + dur)); }
+const fmt = n => Math.round(n).toLocaleString('en-US');
+function typeIn(el, str, t, a, b, focusEnd) {
+  const k = p(t, a, b); const n = Math.round(k * str.length); const on = t >= a - .25 && t < (focusEnd ?? b + .3);
+  el.innerHTML = (n ? str.slice(0, n) : '') + (on ? '<span class="caret"></span>' : ''); el.classList.toggle('focus', on);
+}
+function stamp(el, t, t0, rot = -8) { const k = p(t, t0, t0 + .22); el.style.opacity = k > 0 ? 1 : 0; el.style.rotate = rot + 'deg'; el.style.scale = String(k > 0 ? pscale(EO(k), 2.2, 1) : 2.2); }
+
+// ================================================================ transitions (presentations) + motion-blur windows
+const MB = [];      // [start, end] windows the renderer samples at sub-frames
+function mbWindow(a, b) { MB.push([a, b]); }
+// push slide: old content leaves left, new content enters from the right
+function slidePush(outEl, inEl, t, t0, dur = .42) {
+  const k = EIO(p(t, t0, t0 + dur));
+  if (outEl) { outEl.style.translate = `${-k * 1100}px 0`; outEl.style.opacity = k >= 1 ? 0 : 1; }
+  if (inEl) { inEl.style.translate = `${(1 - k) * 1100}px 0`; inEl.style.opacity = t >= t0 ? 1 : 0; }
+}
+function flipCard(el, t, t0, dur = .5) { const k = EIO(p(t, t0, t0 + dur)); el.style.rotate = 'none'; el.style.transform = `perspective(2200px) rotateY(${k * 180}deg)`; return k; }
+// warm light leak at a cut point (overlay, does not shorten the timeline)
+function leak(t, t0, dur = .9, seed = 1) {
+  const k = (t - t0) / dur; if (k <= 0 || k >= 1) return 0;
+  const r = rng(seed); const I = Math.pow(Math.sin(Math.PI * k), 1.3);
+  const cols = ['rgba(246,196,112,.95)', 'rgba(233,138,58,.85)', 'rgba(243,180,154,.8)'];
+  ['lk1', 'lk2', 'lk3'].forEach((id, i) => {
+    const e = $(id); const sz = 700 + r() * 500; const x0 = -300 + r() * 900, y0 = 200 + r() * 1300, dx = 300 + r() * 500, dy = -200 + r() * 400;
+    e.style.width = e.style.height = sz + 'px'; e.style.background = `radial-gradient(circle, ${cols[i]} 0%, rgba(0,0,0,0) 65%)`;
+    e.style.left = (x0 + dx * k) + 'px'; e.style.top = (y0 + dy * k) + 'px';
+  });
+  return I;
+}
+
+// ================================================================ hand-drawn annotations (rough-notation style, own implementation)
+const NS = 'http://www.w3.org/2000/svg';
+// The boxes a target occupies, relative to its offsetParent's padding box. An inline element that wraps
+// gets one box per line: its offsetLeft is where the first line starts but its offsetWidth spans both
+// lines, so a single box from those would send an underline off the side of the card.
+function annRects(target) {
+  const host = target.offsetParent;
+  const rs = [...target.getClientRects()].filter(r => r.width > .5 && r.height > .5);
+  if (rs.length <= 1 || getComputedStyle(target).display !== 'inline') return [{ x: target.offsetLeft, y: target.offsetTop, w: target.offsetWidth, h: target.offsetHeight }];
+  const hr = host.getBoundingClientRect();
+  const sx = host.offsetWidth ? hr.width / host.offsetWidth : 1, sy = host.offsetHeight ? hr.height / host.offsetHeight : 1;
+  return rs.map(r => ({ x: (r.left - hr.left) / sx - host.clientLeft, y: (r.top - hr.top) / sy - host.clientTop, w: r.width / sx, h: r.height / sy }));
+}
+// one box round the whole target (a circle or a cross goes round everything it marks)
+function annBox(target, pad) {
+  const rs = annRects(target); const x0 = Math.min(...rs.map(r => r.x)), y0 = Math.min(...rs.map(r => r.y));
+  const x1 = Math.max(...rs.map(r => r.x + r.w)), y1 = Math.max(...rs.map(r => r.y + r.h));
+  return { x: x0 - pad, y: y0 - pad, w: x1 - x0 + 2 * pad, h: y1 - y0 + 2 * pad };
+}
+function annSvgAt(host, b, z) {
+  const s = document.createElementNS(NS, 'svg');
+  s.setAttribute('class', 'ann'); s.style.left = b.x + 'px'; s.style.top = b.y + 'px'; s.setAttribute('width', b.w); s.setAttribute('height', b.h); s.style.zIndex = z;
+  host.appendChild(s); return s;
+}
+function annSvg(target, pad, z = 2) { const b = annBox(target, pad); return { s: annSvgAt(target.offsetParent, b, z), b }; }
+// a stroke under (or through) each line of the target, drawn in reading order as one gesture
+function annLines(target, pad, z, draw) {
+  const host = target.offsetParent;
+  const parts = annRects(target).map((r, i) => { const b = { x: r.x - pad, y: r.y - pad, w: r.w + 2 * pad, h: r.h + 2 * pad }; const s = annSvgAt(host, b, z); return { b, s, q: draw(s, b, i) }; });
+  const tot = parts.reduce((a, x) => a + x.b.w, 0) || 1; let acc = 0; parts.forEach(x => { x.a = acc / tot; acc += x.b.w; x.z = acc / tot; });
+  return { parts, set(k) { const e = EIO(cl(k)); parts.forEach(x => { x.q.pa.style.strokeDashoffset = x.q.L * (1 - cl((e - x.a) / Math.max(1e-6, x.z - x.a))); }); } };
+}
+function annPath(svg, d, color, width, opacity = 1) {
+  const pa = document.createElementNS(NS, 'path'); pa.setAttribute('d', d); pa.setAttribute('fill', 'none'); pa.setAttribute('stroke', color);
+  pa.setAttribute('stroke-width', width); pa.setAttribute('stroke-linecap', 'round'); pa.setAttribute('stroke-linejoin', 'round'); pa.setAttribute('opacity', opacity);
+  svg.appendChild(pa); const L = pa.getTotalLength(); pa.style.strokeDasharray = L; pa.style.strokeDashoffset = L; return { pa, L };
+}
+function ellipseD(cx, cy, rx, ry, seed) {
+  const r = rng(seed); const st = -2.2 + r() * .6; const pts = [];
+  for (let i = 0; i <= 96; i++) { const f = i / 96; const a = st + f * 2 * Math.PI * 1.1; const j = 1 + (r() - .5) * .025 + f * .06; pts.push(`${(cx + Math.cos(a) * rx * j).toFixed(1)} ${(cy + Math.sin(a) * ry * j).toFixed(1)}`); }
+  return 'M' + pts.join(' L');
+}
+function lineD(x1, y1, x2, y2, seed, bow = .02) { const r = rng(seed); const mx = (x1 + x2) / 2 + (r() - .5) * 8, my = (y1 + y2) / 2 + (r() - .5) * Math.hypot(x2 - x1, y2 - y1) * bow; return `M${x1} ${y1} Q${mx} ${my} ${x2} ${y2}`; }
+const RN = {
+  circle(target, { color = '#d4a053', width = 6, pad = 18, seed = 3 } = {}) {
+    const { s, b } = annSvg(target, pad, 3); const parts = [annPath(s, ellipseD(b.w / 2, b.h / 2, b.w / 2 - 4, b.h / 2 - 4, seed), color, width)];
+    return { set(k) { const e = EIO(cl(k)); parts.forEach(q => q.pa.style.strokeDashoffset = q.L * (1 - e)); } };
+  },
+  underline(target, { color = '#d4a053', width = 7, seed = 5, pad = 0 } = {}) {
+    return annLines(target, pad, 3, (s, b, i) => { const y = b.h - 2; return annPath(s, lineD(2, y, b.w - 2, y + 3, seed + i, .04), color, width); });
+  },
+  strike(target, { color = '#a84720', width = 7, seed = 7, pad = 4 } = {}) {
+    return annLines(target, pad, 3, (s, b, i) => { const y = b.h * .55; return annPath(s, lineD(0, y + 3, b.w, y - 3, seed + i, .03), color, width); });
+  },
+  cross(target, { color = '#a84720', width = 7, seed = 9, pad = 10 } = {}) {
+    const { s, b } = annSvg(target, pad, 3); const a = annPath(s, lineD(4, 4, b.w - 4, b.h - 4, seed, .03), color, width), c = annPath(s, lineD(b.w - 4, 4, 4, b.h - 4, seed + 1, .03), color, width);
+    return { set(k) { a.pa.style.strokeDashoffset = a.L * (1 - EIO(cl(k * 2))); c.pa.style.strokeDashoffset = c.L * (1 - EIO(cl(k * 2 - 1))); } };
+  },
+  highlight(target, { color = '#f0c579', pad = 6, seed = 11, opacity = .55 } = {}) {
+    const h = annLines(target, pad, 0, (s, b, i) => {
+      s.style.mixBlendMode = 'multiply'; const y = b.h / 2; const q = annPath(s, lineD(8, y + 2, b.w - 8, y - 2, seed + i, .02), color, b.h * .82, opacity);
+      q.pa.setAttribute('stroke-linecap', 'butt'); return q;
+    });
+    target.style.position = 'relative'; target.style.zIndex = 1; return h;
+  },
+};
+
+// ================================================================ the world: night scene + day line art (engine/world-*.js)
+/*WORLD*/
+
+// ================================================================ reel plumbing
+const RID = (location.hash || '#' + Object.keys(window.TIMING)[0]).slice(1);
+const T = window.TIMING[RID];
+const LN = i => T.lines[i - 1];
+const norm = s => s.toLowerCase().replace(/[^a-z0-9'\-]/g, '');
+function wt(i, word, n = 0) { let k = 0; for (const w of LN(i).words) if (norm(w[0]) === norm(word)) { if (k === n) return w[1]; k++; } throw new Error(`word ${word} not in line ${i}`); }
+function we(i, word, n = 0) { let k = 0; for (const w of LN(i).words) if (norm(w[0]) === norm(word)) { if (k === n) return w[2]; k++; } throw new Error(`word ${word} not in line ${i}`); }
+const EVENTS = []; function ev(t, kind) { EVENTS.push([Math.round(t * 1000) / 1000, kind]); }
+
+const CAPFIX = window.CAPFIX || {};   // per line: [spoken words, how the caption shows them] (project.json captionFix)
+const CHUNKS = [];
+function buildCaptions() {
+  for (const line of T.lines) {
+    const toks = line.text.split(/\s+/); let wi = 0; const items = [];
+    for (const tok of toks) {
+      const core = tok.replace(/^[^A-Za-z0-9]+|[^A-Za-z0-9']+$/g, ''); const w = line.words[wi];
+      if (!w || norm(w[0]) !== norm(core)) console.log('caption mismatch', line.id, tok, w && w[0]);
+      items.push({ txt: tok, a: w[1], b: w[2], core }); wi++;
+    }
+    for (const [from, to] of (CAPFIX[line.id] || [])) {
+      const fw = from.split(' ');
+      for (let i = 0; i + fw.length <= items.length; i++) {
+        if (fw.every((f, k) => norm(items[i + k].core) === norm(f))) {
+          const last = items[i + fw.length - 1]; const trail = last.txt.match(/[^A-Za-z0-9']+$/);
+          items.splice(i, fw.length, { txt: to + (trail ? trail[0] : ''), a: items[i].a, b: last.b, core: to }); break;
+        }
+      }
+    }
+    let cur = [];
+    const flush = () => { if (cur.length) CHUNKS.push({ items: cur, a: cur[0].a, b: cur[cur.length - 1].b, line: line.id }); cur = []; };
+    for (const it of items) {
+      const chars = cur.reduce((s, x) => s + x.txt.length + 1, 0);
+      if (cur.length && (cur.length >= 4 || chars + it.txt.length > 20)) flush();
+      cur.push(it); if (/[.,?!…:]$/.test(it.txt)) flush();
+    }
+    flush();
+  }
+  // Readability: a chunk that would be on screen for under 0.4 s (fast speech) is re-cut together with the
+  // rest of its phrase, the words up to the next punctuation, at most 24 characters and 5 words a chunk,
+  // keeping the cut whose shortest chunk stays up longest. Phrases that read fine are left as they are.
+  const ends = c => /[.,?!…:]$/.test(c.items[c.items.length - 1].txt);
+  const upFor = (c, n) => (n ? Math.min(n.a, c.b + .86) : c.b + .86) - c.a;
+  for (let i = 0; i < CHUNKS.length; i++) {
+    if (upFor(CHUNKS[i], CHUNKS[i + 1]) >= .4) continue;
+    let s = i; while (s > 0 && CHUNKS[s - 1].line === CHUNKS[i].line && !ends(CHUNKS[s - 1])) s--;
+    let e = i; while (!ends(CHUNKS[e]) && e + 1 < CHUNKS.length && CHUNKS[e + 1].line === CHUNKS[i].line) e++;
+    const its = CHUNKS.slice(s, e + 1).flatMap(c => c.items), after = CHUNKS[e + 1]; let best = null;
+    for (let mask = 0; mask < 1 << (its.length - 1); mask++) {   // bit k set: cut after item k
+      const parts = [[its[0]]]; for (let k = 1; k < its.length; k++) { if (mask >> (k - 1) & 1) parts.push([]); parts[parts.length - 1].push(its[k]); }
+      if (parts.some(q => q.length > 5 || q.map(x => x.txt).join(' ').length > 24)) continue;
+      const cs = parts.map(q => ({ a: q[0].a, b: q[q.length - 1].b }));
+      const score = Math.min(...cs.map((c, k) => upFor(c, cs[k + 1] || after)));
+      if (!best || score > best.score + 1e-9) best = { score, parts };
+    }
+    if (best) { const ln = CHUNKS[s].line; CHUNKS.splice(s, e - s + 1, ...best.parts.map(q => ({ items: q, a: q[0].a, b: q[q.length - 1].b, line: ln }))); i = s + best.parts.length - 1; }
+  }
+  // a phrase too short to re-cut (one quick word, "Small,") joins the next chunk of its line when that fits
+  for (let i = 0; i + 1 < CHUNKS.length; i++) {
+    const c = CHUNKS[i], n = CHUNKS[i + 1]; if (upFor(c, n) >= .4 || n.line !== c.line) continue;
+    const its = [...c.items, ...n.items]; if (its.length > 5 || its.map(x => x.txt).join(' ').length > 24) continue;
+    CHUNKS.splice(i, 2, { items: its, a: c.a, b: n.b, line: c.line });
+  }
+  for (let i = 0; i < CHUNKS.length; i++) { const c = CHUNKS[i], n = CHUNKS[i + 1]; c.show = c.a - .06; c.hide = n ? Math.min(n.a - .06, c.b + .8) : c.b + .8; }
+}
+function captions(t) {
+  const i = CHUNKS.findIndex(c => t >= c.show && t < c.hide); $('cap').style.opacity = i >= 0 ? 1 : 0; if (i < 0) return;
+  const c = CHUNKS[i];
+  const pl = $('plate');
+  pl.innerHTML = c.items.map(it => { const on = t >= it.a && t < it.b + .02; const sc = on ? 1 + .07 * Math.sin(Math.PI * p(t, it.a, it.a + .18)) : 1; return `<span class="w ${on ? 'on' : (t >= it.b ? '' : 'todo')}" style="scale:${sc.toFixed(3)}">${it.txt.replace(/'/g, '’')}</span>`; }).join(' ');
+  // one line always: a chunk too wide for the plate is set a little smaller instead of wrapping
+  pl.style.whiteSpace = 'nowrap'; pl.style.fontSize = '56px';
+  for (let fs = 54; pl.scrollWidth > pl.clientWidth + 1 && fs >= 44; fs -= 2) pl.style.fontSize = fs + 'px';
+  $('cap').style.scale = String(pscale(spr(t - c.show, { damping: 16, stiffness: 260 }), .9, 1));
+}
+
+let PAPER_AT = 99, END_AT = 99, LEAKS = [];
+function chrome(t) {
+  const night = t < PAPER_AT + .45;
+  cv.style.opacity = night ? 1 : 0; $('veil').style.opacity = night ? 1 : 0; $('night').style.opacity = night ? 1 : 0;
+  if (night) drawNight(t * 1.6 + 2.0);
+  cv.style.filter = 'blur(3px) brightness(.82)';
+  const k = EIO(p(t, PAPER_AT - .05, PAPER_AT + .4));
+  $('paper').style.clipPath = `circle(${(k * 1400).toFixed(1)}px at 540px 900px)`;
+  SKY.style.strokeDashoffset = SKYLEN * (1 - EIO(p(t, PAPER_AT, PAPER_AT + 1.6)));
+  SKY.style.opacity = t >= PAPER_AT ? .2 + .38 * EIO(p(t, END_AT, END_AT + .6)) : 0;
+  document.querySelector('#dayart line').style.opacity = t >= PAPER_AT ? 1 : 0;
+  $('bug').style.opacity = t >= PAPER_AT + .2 && t < END_AT ? EO(p(t, PAPER_AT + .2, PAPER_AT + .5)) * (1 - EO(p(t, END_AT - .2, END_AT))) : 0;
+  // end card
+  const ke = EO(p(t, END_AT, END_AT + .4)); $('end').style.opacity = ke;
+  $('end').querySelector('.lock').style.scale = String(pscale(spr(t - END_AT, { damping: 12, stiffness: 160 }), .82, 1));
+  enter($('elabel'), t, END_AT + .12, { dy: 26, s0: 1 }); enter($('eurl'), t, END_AT + .28, { dy: 20, s0: 1 }); enter($('efoot'), t, END_AT + .42, { dy: 14, s0: 1 });
+  if (t < END_AT) { $('elabel').style.opacity = 0; $('eurl').style.opacity = 0; $('efoot').style.opacity = 0; }
+  $('pscene').style.opacity = 1 - EO(p(t, END_AT - .05, END_AT + .2));
+  $('sunGrp').style.opacity = EO(p(t, END_AT, END_AT + .8));
+  const rise = EIO(p(t, END_AT, END_AT + 3)); $('sunDisc').setAttribute('cy', ART.hz + 30 - 140 * rise); $('sunHalo').setAttribute('cy', ART.hz + 30 - 140 * rise);
+  // light leaks at the cut points
+  let I = 0; for (const [a, d, s] of LEAKS) I = Math.max(I, leak(t, a, d, s)); $('leak').style.opacity = I;
+  captions(t);
+  const fr = Math.floor(t * 30); const r = rng(fr + 7);
+  $('grain').style.translate = `${Math.floor(r() * 200 - 100)}px ${Math.floor(r() * 200 - 100)}px`;
+  const day = t >= PAPER_AT + .3; $('grain').style.opacity = day ? .035 : .07;
+  $('vig').style.background = day ? 'radial-gradient(120% 100% at 50% 45%, rgba(0,0,0,0) 62%, rgba(90,70,30,.10) 100%)' : 'radial-gradient(110% 95% at 50% 45%, rgba(0,0,0,0) 55%, rgba(0,0,0,.42) 100%)';
+}
+
+// ================================================================ scene kit: building blocks most reels use
+// a deck of full-width cards: the first enters on a spring, each next one pushes the previous out (motion-blurred)
+function deckSetup(cards, dur = .42) { cards.forEach((c, i) => { if (i > 0) { mbWindow(c.at, c.at + dur); ev(c.at, 'whip'); } }); }
+function deck(t, cards, dur = .42) {
+  cards.forEach((c, i) => {
+    const el = $(c.id), a = c.at, nx = cards[i + 1] ? cards[i + 1].at : Infinity;
+    if (i === 0) enter(el, t, a);
+    else { const k = EIO(p(t, a, a + dur)); el.style.opacity = t >= a ? 1 : 0; el.style.translate = `${(1 - k) * 1100}px 0`; el.style.scale = '1'; }
+    if (t >= nx) { const k = EIO(p(t, nx, nx + dur)); el.style.translate = `${-k * 1100}px 0`; if (k >= 1) el.style.opacity = 0; }
+  });
+}
+function nightCard(el, t, a = .25) { enter(el, t, a, { dy: 70, s0: .94 }); }
+function chips(t, list) { list.forEach(([el, a, dy]) => enter(typeof el === 'string' ? $(el) : el, t, a, { dy: dy ?? 18, s0: .9, cfg: { damping: 14, stiffness: 220 } })); }
+function hookSetup(self, lines, opts) { $('night').innerHTML = `<div class="hook" id="h"></div>` + (opts.extra || ''); self.hw = buildHook($('h'), lines, opts); }
+function std(self, lastLine) { self.paperAt = LN(2).on - .05; self.endAt = LN(lastLine).on - .05; }
+// a card that grows to show its rows as they enter (a receipt printing) instead of sitting half-empty
+function revealSetup(card, rows) {
+  card.style.minHeight = '0'; card.style.justifyContent = 'flex-start';
+  const kids = [...card.children]; kids.forEach(k => { k.style.flexShrink = '0'; });
+  const first = kids.indexOf($(rows[0][0])); let base = 0;
+  kids.slice(0, first).forEach(k => { if (getComputedStyle(k).position !== 'absolute') base = Math.max(base, k.offsetTop + k.offsetHeight); });
+  const steps = rows.map(([id, at]) => { const el = $(id); return { at, bot: el.offsetTop + el.offsetHeight }; });
+  card.style.overflow = 'hidden';
+  return { base, pb: parseFloat(getComputedStyle(card).paddingBottom), steps };
+}
+function reveal(card, rv, t, dur = .32) {
+  let h = rv.base; for (const s of rv.steps) h += (Math.max(h, s.bot) - h) * EIO(p(t, s.at - .12, s.at - .12 + dur));
+  card.style.height = (h + rv.pb) + 'px';
+}
+
+// one key-press sound per typed character between a and b
+function typeEventsK(str, a, b) { for (let k = 0; k < str.length; k++) if (str[k] !== ' ') ev(a + (k + .5) / str.length * (b - a), 'key'); }
+
+// brand: name, url, logo (inline SVG) and optional palette overrides, from project.json
+function applyBrand(B) {
+  const root = document.documentElement.style;
+  for (const [k, v] of Object.entries(B.palette || {})) root.setProperty('--' + k, v);
+  document.querySelectorAll('.logo').forEach(el => { el.innerHTML = B.logoSvg || ''; el.style.display = B.logoSvg ? '' : 'none'; });
+  document.querySelectorAll('#end .wm, #bug .wm').forEach(el => { el.textContent = B.name || ''; });
+  $('eurl').textContent = B.url || '';
+}
+
+const REELS = {};
+/*SCENES*/
+
+const R = REELS[RID];
+let READY = false;
+function init() {
+  if (READY) return; READY = true;
+  buildCaptions(); R.setup();
+  applyBrand(window.BRAND || {});
+  $('buglb').textContent = R.bug; $('elabel').innerHTML = R.label; $('efoot').innerHTML = R.foot;
+  $('elabel').style.fontSize = Math.min(80, fitSize(R.label.replace(/<[^>]+>/g, ''), 'Sora', 600, 860, 80, 62)) + 'px';
+  const lb = $('elabel'); $('eurl').style.top = (lb.offsetTop + lb.offsetHeight + 46) + 'px'; $('efoot').style.top = (lb.offsetTop + lb.offsetHeight + 150) + 'px';
+  PAPER_AT = R.paperAt; END_AT = R.endAt;
+  LEAKS.push([PAPER_AT - .15, .9, 3], [END_AT - .1, .9, 8]);
+  mbWindow(PAPER_AT - .05, PAPER_AT + .35);
+  ev(0, 'open'); ev(PAPER_AT, 'iris'); ev(END_AT, 'end');
+  window.EVENTS = EVENTS; window.DUR = T.dur; window.MB = MB;
+  window.POSTER_AT = R.posterAt ?? Math.max(.5, PAPER_AT - .45);   // the cover frame: the hook fully in, before the iris
+}
+window.loadFonts = () => Promise.all(['600 100px Sora', '400 40px InterK', '500 40px InterK', '600 40px InterK', '400 40px SpaceMono', '700 40px SpaceMono'].map(f => document.fonts.load(f))).then(() => { init(); return true; });
+window.render = t => { init(); window.scrollTo(0, 0); chrome(t); R.scene(t); };
+</script>
+</body></html>
