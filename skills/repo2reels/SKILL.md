@@ -1,6 +1,6 @@
 ---
 name: repo2reels
-description: Turn the product in this repo into short vertical reels (20–30 s, TikTok and Instagram) with a strong hook, a checked voice-over, beat-synced motion and a mastered mix, checked frame by frame. Use when asked for reels, shorts, a launch video or social videos about a product or codebase.
+description: Turn the product in this repo into short vertical video reels (20–30 s, for TikTok, Instagram Reels and YouTube Shorts) with a strong hook, a checked AI voice-over, captions, beat-synced motion and music, rendered locally and checked frame by frame. Use when asked for reels, shorts, a launch video, a product video or social videos about a product or codebase.
 ---
 
 # Repo2Reels
