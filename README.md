@@ -7,7 +7,7 @@
 ![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-0b4f4a)
 [![Claude Code plugin](https://img.shields.io/badge/Claude%20Code-plugin-d4a053)](#with-claude-code)
 
-![Three reels made with Repo2Reels: the hook, then the iris into the day scene, then the first card](media/showcase.gif)
+![Three reels made with Repo2Reels: the hook, then the iris into the day scene, then the first card](https://github.com/user-attachments/assets/74a82f0b-82dc-4a71-9531-10c61175fdad)
 
 Made with Repo2Reels for [keyva.ae](https://keyva.ae). Watch three in full; press play, then turn the sound on:
 
@@ -136,4 +136,4 @@ Bug reports, new scenes, new worlds and fixes are welcome. [CONTRIBUTING.md](CON
 - [Remotion](https://www.remotion.dev): the motion ideas, reimplemented here. Repo2Reels contains no Remotion code and is not affiliated with Remotion.
 - Voice: [Kokoro](https://huggingface.co/hexgrad/Kokoro-82M) through [kokoro-onnx](https://github.com/thewh1teagle/kokoro-onnx), and the [misaki](https://github.com/hexgrad/misaki) dictionary. Listening: Whisper through [sherpa-onnx](https://github.com/k2-fsa/sherpa-onnx). Fonts: Sora, Space Mono and Inter (SIL OFL).
 
-The code is MIT-licensed, and so is the starter project. The Keyva name, logo and reels (`projects/keyva`, and the Keyva reels, covers and showcase in `media/`) belong to Keyva. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+The code is MIT-licensed, and so is the starter project. The Keyva name, logo and reels (`projects/keyva`, `media/covers.jpg`, and the Keyva reels shown on this page) belong to Keyva. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

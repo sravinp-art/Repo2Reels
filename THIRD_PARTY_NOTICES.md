@@ -2,8 +2,8 @@
 
 ## Not covered by the MIT licence
 - The fonts in `engine/fonts`, under the SIL Open Font License 1.1 (see "Bundled" below).
-- The Keyva name, logo and reel content in `projects/keyva`, and the Keyva reels, covers and showcase in
-  `media/`. They belong to Keyva and are there as a worked example. The starter project and everything
+- The Keyva name, logo and reel content in `projects/keyva`, the Keyva covers in `media/`, and the Keyva
+  reels and showcase shown in the README. They belong to Keyva and are there as a worked example. The starter project and everything
   else in this repository are under the MIT licence in `LICENSE`.
 
 ## Ideas and adapted work
