@@ -39,7 +39,9 @@ cd Repo2Reels
 python3 make.py projects/starter      # one 20-second reel: out/starter/repo2reels-reel-1-your-repo-reels.mp4
 ```
 
-`setup.sh` tells you what to install if anything is missing, and puts the Python packages in a private `.venv` when your system Python won't take them. The starter reel takes about five minutes on a two-core machine.
+`setup.sh` tells you what to install if anything is missing, and puts the Python packages in a private `.venv` when your system Python won't take them. The starter reel takes about five minutes on a two-core machine, and this is it:
+
+https://github.com/user-attachments/assets/4919cafb-b502-4ee3-b2a7-fdcdd45f1264
 
 ## Make reels for your own product
 
