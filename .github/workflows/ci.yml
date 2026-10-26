@@ -26,12 +26,12 @@ jobs:
       run:
         shell: bash          # -eo pipefail, so a failing command fails its step even through tee
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Install ffmpeg
         run: |
           if [ "$RUNNER_OS" = "macOS" ]; then brew install ffmpeg; else sudo apt-get update -q && sudo apt-get install -y -q ffmpeg; fi
       - name: Cache the voice models
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: models
           key: models-${{ runner.os }}-${{ hashFiles('setup.sh') }}
@@ -50,7 +50,7 @@ jobs:
         run: |
           touch ci.log
           echo "::error title=Last lines before the failure::$(tail -n 30 ci.log | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: starter-reel-${{ matrix.os }}
