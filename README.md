@@ -4,10 +4,17 @@
 
 ![Three reels made with Repo2Reels: the hook, then the iris into the day scene, then the first card](media/showcase.gif)
 
-Made with Repo2Reels for [keyva.ae](https://keyva.ae). Watch three in full:
-[There's no JVC in Dubai's rent records](media/reels/keyva-reel-11-no-jvc-on-record.mp4) ·
-[That 10% deposit? It's not a law](media/reels/keyva-reel-18-deposit-not-law.mp4) ·
-[Keyva sometimes won't](media/reels/keyva-reel-14-sometimes-it-says-no.mp4)
+Made with Repo2Reels for [keyva.ae](https://keyva.ae). Watch three in full; press play, then turn the sound on:
+
+<table>
+<tr>
+<td align="center" width="33%"><video src="https://github.com/user-attachments/assets/2aed93e7-8370-4d9b-b934-60bed5622a4b" controls playsinline width="240"></video><br><sub>There's no JVC in Dubai's rent records</sub></td>
+<td align="center" width="33%"><video src="https://github.com/user-attachments/assets/05890fd8-7f2f-4a9f-8eb6-aea6608b6f1e" controls playsinline width="240"></video><br><sub>That 10% deposit? It's not a law</sub></td>
+<td align="center" width="33%"><video src="https://github.com/user-attachments/assets/cb3b43d4-320a-4c5a-8446-bb038ae68913" controls playsinline width="240"></video><br><sub>Keyva sometimes won't</sub></td>
+</tr>
+</table>
+
+The same three are in [media/reels](media/reels) to download.
 
 ![The covers of all ten reels in the Keyva example](media/covers.jpg)
 
