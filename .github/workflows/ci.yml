@@ -22,6 +22,9 @@ jobs:
         os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 45
+    defaults:
+      run:
+        shell: bash          # -eo pipefail, so a failing command fails its step even through tee
     steps:
       - uses: actions/checkout@v4
       - name: Install ffmpeg
@@ -33,15 +36,20 @@ jobs:
           path: models
           key: models-${{ runner.os }}-${{ hashFiles('setup.sh') }}
       - name: Setup
-        run: ./setup.sh --listen
+        run: ./setup.sh --listen 2>&1 | tee -a ci.log
       - name: Make the starter reel
-        run: python3 make.py projects/starter --listen
+        run: python3 make.py projects/starter --listen 2>&1 | tee -a ci.log
       - name: Check the reel
         run: |
           f=out/starter/repo2reels-reel-1-your-repo-reels.mp4
           test -s "$f"
-          ffprobe -v error -show_entries format=duration -show_entries stream=codec_type,width,height -of compact "$f"
-          python3 -m r2r.listen --file "$f"
+          ffprobe -v error -show_entries format=duration -show_entries stream=codec_type,width,height -of compact "$f" 2>&1 | tee -a ci.log
+          python3 -m r2r.listen --file "$f" 2>&1 | tee -a ci.log
+      - name: Put the end of the log in the run's annotations
+        if: failure()
+        run: |
+          touch ci.log
+          echo "::error title=Last lines before the failure::$(tail -n 30 ci.log | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')"
       - uses: actions/upload-artifact@v4
         if: always()
         with:

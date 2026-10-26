@@ -18,15 +18,12 @@ def _run_in_venv():
         return
     if _Path(_sys.prefix).resolve() == venv.resolve():
         return                                          # already inside it
-    main = _sys.modules.get('__main__')
-    spec = getattr(main, '__spec__', None)
-    if spec is not None and spec.name:
-        head = ['-m', spec.name]                        # python3 -m r2r.page ...
-    elif _sys.argv and _sys.argv[0] and _os.path.isfile(_sys.argv[0]):
-        head = [_sys.argv[0]]                           # python3 make.py ...
-    else:
-        return                                          # python3 -c / an interactive session: leave it alone
-    _os.execv(str(py), [str(py), *head, *_sys.argv[1:]])
+    # The command line exactly as typed (python3 make.py ..., python3 -m r2r.page ...). sys.argv can't be used:
+    # under -m it still reads ['-m'] while this package is being imported.
+    argv = getattr(_sys, 'orig_argv', None)
+    if not argv or len(argv) < 2 or _sys.flags.interactive or hasattr(_sys, 'ps1'):
+        return                                          # an interactive session: leave it alone
+    _os.execv(str(py), [str(py), *argv[1:]])
 
 
 _run_in_venv()
