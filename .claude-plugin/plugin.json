@@ -1,5 +1,6 @@
 {
   "name": "repo2reels",
+  "displayName": "Repo2Reels",
   "description": "Make short vertical video reels about the product in your repo, for TikTok, Instagram Reels and YouTube Shorts: a hook, an AI voice-over that is heard back, word-by-word captions, motion graphics and music, rendered on your own computer.",
   "version": "0.1.0",
   "author": {
@@ -21,5 +22,8 @@
     "launch-video",
     "marketing"
   ],
-  "icon": ".claude-plugin/icon.png"
+  "icon": ".claude-plugin/icon.png",
+  "documentationUrl": "https://github.com/sravinp-art/Repo2Reels/blob/main/docs/writing-scenes.md",
+  "supportUrl": "https://github.com/sravinp-art/Repo2Reels/issues",
+  "privacyPolicyUrl": "https://github.com/sravinp-art/Repo2Reels/blob/main/PRIVACY.md"
 }
