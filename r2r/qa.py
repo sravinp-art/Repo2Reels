@@ -5,6 +5,9 @@
   a half-empty card, a "0" before a count starts, anything left over from the previous scene.
 - Hook lines must end by x = 970 px (safe from the right-hand buttons).
 - Every caption chunk must stay on screen long enough to read (0.4 s or more) and fit on one line.
+- Captions and the topic label must actually be visible (a scene stylesheet can hide them by reusing a class
+  name such as .plate or .lb), and no card or end-card note may reach down into the captions (y 1270 and below).
+- Nothing should arrive in the last second before a cut: it is gone before anyone can read it.
 
     python3 -m r2r.qa projects/keyva [r11 ...]       -> build/<p>/qa/<rid>.jpg and a printed report
 """
@@ -23,7 +26,25 @@ PAGE_CHECK = '''() => {
     return { text: d.textContent, right: d.parentElement.offsetLeft + z.offsetLeft + z.offsetWidth }; });
   const caps = CHUNKS.map(c => { render((c.show + c.hide) / 2); const p = document.getElementById('plate');
     return { text: c.items.map(i => i.txt).join(' '), up: c.hide - c.show, size: p.style.fontSize, h: p.offsetHeight }; });
-  return { hooks, caps };
+  const opa = el => { let o = 1; for (let x = el; x && x !== document.documentElement; x = x.parentElement) {
+    const cs = getComputedStyle(x); if (cs.display === 'none' || cs.visibility === 'hidden') return 0; o *= +cs.opacity; } return o; };
+  let hidden = 0;
+  for (const c of CHUNKS) { render((c.show + c.hide) / 2); const pl = document.getElementById('plate'), r = pl.getBoundingClientRect();
+    if (opa(pl) < .5 || r.width < 10 || r.height < 10) hidden++; }
+  const R = REELS[RID]; render(R.paperAt + 1); const bl = document.getElementById('buglb');
+  const bug = !R.bug || (opa(bl) > .5 && bl.getBoundingClientRect().width > 10);
+  const ats = (R.cards || []).map(c => c.at).concat([R.endAt]), low = [], late = [];
+  const seen = t => { render(t); const m = new Map(); for (const e of document.querySelectorAll('#pscene [id], #pscene svg.ann')) m.set(e, opa(e)); return m; };
+  for (let k = 1; k < ats.length; k++) {
+    render(ats[k] - .12); let bot = 0, who = '';
+    for (const c of document.querySelectorAll('#pscene .card')) { if (opa(c) < .5) continue;
+      for (const e of [c, ...c.querySelectorAll('*')]) { if (opa(e) < .05) continue; const r = e.getBoundingClientRect(); if (r.height > 0 && r.bottom > bot) { bot = r.bottom; who = c.id; } } }
+    low.push([who, Math.round(bot)]);
+    const a = seen(ats[k] - 1.0), b = seen(ats[k] - .06);
+    for (const [e, o] of b) if (o > .6 && (a.get(e) ?? 0) < .3 && !e.classList.contains('card')) late.push([e.id || 'an annotation', +ats[k].toFixed(2)]);
+  }
+  render(R.endAt + 1.2); const foot = Math.round(document.getElementById('efoot').getBoundingClientRect().bottom);
+  return { hooks, caps, n: CHUNKS.length, hidden, bug, low, late, foot };
 }'''
 
 
@@ -40,6 +61,11 @@ async def _page_checks(build, rids):
             one = min(c['h'] for c in r['caps']) if r['caps'] else 0
             p += [f'caption "{c["text"]}" is up for only {c["up"]:.2f} s' for c in r['caps'] if c['up'] < .4]
             p += [f'caption "{c["text"]}" wraps to two lines' for c in r['caps'] if c['h'] > one + 20]
+            if r['hidden']: p.append(f'captions are not visible in {r["hidden"]} of {r["n"]} chunks (does a scene style reuse .plate?)')
+            if not r['bug']: p.append('the topic label is not visible (does a scene style reuse .lb?)')
+            p += [f'card {who} reaches down to y {bot}, into the captions (keep cards above 1270)' for who, bot in r['low'] if bot > 1270]
+            p += [f'"{e}" arrives less than a second before the cut at {t:.2f} s' for e, t in r['late']]
+            if r['foot'] > 1282: p.append(f'the end-card note reaches down to y {r["foot"]}, into the captions')
             problems[rid] = p
         await b.close()
     return problems

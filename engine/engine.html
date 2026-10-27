@@ -451,6 +451,10 @@ function init() {
   $('buglb').textContent = R.bug; $('elabel').innerHTML = R.label; $('efoot').innerHTML = R.foot;
   $('elabel').style.fontSize = Math.min(80, fitSize(R.label.replace(/<[^>]+>/g, ''), 'Sora', 600, 860, 80, 62)) + 'px';
   const lb = $('elabel'); $('eurl').style.top = (lb.offsetTop + lb.offsetHeight + 46) + 'px'; $('efoot').style.top = (lb.offsetTop + lb.offsetHeight + 150) + 'px';
+  // a long source note must end above the captions (top 1290): lift the whole end card, then set the note smaller
+  { const ft = $('efoot'), CAP = 1262, lock = $('end').querySelector('.lock'); const over = ft.offsetTop + ft.offsetHeight - CAP;
+    if (over > 0) { const up = Math.min(over, 240); [lock, lb, $('eurl'), ft].forEach(el => { el.style.top = (el.offsetTop - up) + 'px'; }); }
+    for (let fs = 23; ft.offsetTop + ft.offsetHeight > CAP && fs >= 19; fs--) ft.style.fontSize = fs + 'px'; }
   PAPER_AT = R.paperAt; END_AT = R.endAt;
   LEAKS.push([PAPER_AT - .15, .9, 3], [END_AT - .1, .9, 8]);
   mbWindow(PAPER_AT - .05, PAPER_AT + .35);
